@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Tailwind Cass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                screens: {
+                'xxs': '50px',
+                'xs': '350px',
+                'dxs':'450px',
+                'sm': '640px',
+                'md': '768px',
+                'lg': '1024px',
+                'xl': '1280px',
+                '2xl': '1536px',
+                },
+                extend: {
+                    screens: {
+                        'dxs': {'min':'450px'},
+                        'xs' : {'min':'350px'},
+                        'xxs' : {'min':'50px'},
+                    },
+                },
+            },
+        }
+    </script>
+    <link rel="stylesheet" href="fontawesome-free-6.5.1-web/css/all.css">
+</head>
+<body class="bg-gradient-to-r from-[#36454F] via-[#8A9A5B] to-[#899499]">
+    <div class="lg:container md:container sm:container dxs:container xs:container xxs:container ">
+        <h3 class="font-[cursive] font-bold underline text-[#84cc16] pt-[2%] lg:text-6xl md:text-4xl xs:text-2xl xxs:text-xl text-center pb-12 md:mt-0 xs:mt-8">What Do You Want TO Know ?</h3>
+        <div class="flex justify-center items-center w-full">
+            <div class="lg:w-[50%] md:w-[50%] sm:w-full dxs:w-full xs:w-full xxs:w-full">
+                <div class="flex flex-col items-center">
+                    <button class="md:w-[100%] xs:w-[50%] m-2 py-2 bg-red-500 font-bold italic hover:bg-[#111827] hover:text-[#0ea5e9]" id="weatherInformation" onclick="newfile(this)">Weather Information</button>
+                    <button class="md:w-[100%] xs:w-[50%] m-2 py-2 bg-red-500 font-bold italic hover:bg-[#111827] hover:text-[#0ea5e9]" id="forTime" onclick="newfile(this)">Time</button>
+                    <button class="md:w-[100%] xs:w-[50%] m-2 py-2 bg-red-500 font-bold italic hover:bg-[#111827] hover:text-[#0ea5e9]" id="currencyCoverter" onclick="newfile(this)">Currency Converter</button>
+                    <button class="md:w-[100%] xs:w-[50%] m-2 py-2 bg-red-500 font-bold italic hover:bg-[#111827] hover:text-[#0ea5e9]" id="forInformation" onclick="newfile(this)">Information About Country</button>
+                    <button class="md:w-[100%] xs:w-[50%] m-2 py-2 bg-red-500 font-bold italic hover:bg-[#111827] hover:text-[#0ea5e9]" id="forGender" onclick="newfile(this)">Gender Check By Name</button>
+                    <button class="md:w-[100%] xs:w-[50%] m-2 py-2 bg-red-500 font-bold italic hover:bg-[#111827] hover:text-[#0ea5e9]" id="forDictionary" onclick="newfile(this)">English Dictionary</button>
+                </div>
+            </div>
+        </div>
+        
+</body>
+<script type="text/javascript">
+    function newfile(ide){
+        let url;
+        let currentId=ide.id;
+        switch(currentId){
+            case 'weatherInformation':
+                url='weatherInformation.html';
+                break;
+            case 'forTime':
+                url='time.html';
+                break;
+            case 'currencyCoverter':
+                url='paisa.html';
+                break;
+            case 'forInformation':
+                url='information.html';
+                break;
+            case 'forGender':
+                url='gender.html';
+                break;
+            case 'forDictionary':
+                url='dic2tionary.html';
+                break;
+            default : 
+                alert("Something is going wrong");
+        }
+        window.open(url,'_blank');
+    }
+</script>
+</html>

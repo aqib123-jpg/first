@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information About Country</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                screens: {
+                'xxs': '50px',
+                'xs': '350px',
+                'dxs':'450px',
+                'sm': '640px',
+                'md': '768px',
+                'lg': '1024px',
+                'xl': '1280px',
+                '2xl': '1536px',
+                },
+                extend: {
+                    screens: {
+                        'dxs': {'min':'450px'},
+                        'xs' : {'min':'350px'},
+                        'xxs' : {'min':'50px'},
+                    },
+                },
+            },
+        }
+    </script>
+    <link rel="stylesheet" href="fontawesome-free-6.5.1-web/css/all.css">
+</head>
+<body class="h-[100vh] overflow-hidden  flex justify-center bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% ">
+    <div class="container flex justify-center h-screen ">
+        <form class="w-full max-w-lg mt-8 ">
+            <fieldset>
+                <label class="font-serif md:text-4xl text-2xl font-bold italic mx-auto text-[#fef2f2]">ENTER COUNTRY NAME : </label>
+                <input type="text" id="countryi" class="border-2 border-[#09090b] block w-full mt-2 px-3 py-2 rounded-md text-lg mx-auto" required="" autofocus><br>
+                <button id="btn" class="bg-[#ea580c] relative hover:bg-[#fafafa] text-white hover:text-[#ea580c] font-bold py-2 px-4 rounded-full mt-2 block mx-auto " onclick="st()" >SEARCH</button>
+            </fieldset>
+        </form>
+        <div class="absolute flex bg-[#4f46e5] top-56 w-full gap-4 md:text-4xl text-2xl font-bold  justify-center text-[#facc15] underline font-serif" id="main">
+        </div>
+        <div class="absolute top-52 w-full md:text-xl  text-center overflow-auto hidden " id="forAnswer" style="max-height: calc(100vh - 250px);">
+            <div class="flex flex-row py-2">
+                <label class=" text-white text-xl font-bold w-[40%] ">Official Name : </label>
+                <span id="officialName" class="w-[60%] "></span>
+            </div>
+            <div class="flex flex-row py-2">
+                <label class=" text-white text-xl font-bold w-[40%]">Area : </label>
+                <span id="forArea" class=" w-[60%]"></span>
+            </div>
+            <div class="flex flex-row py-2">
+                <label  class=" text-white text-xl font-bold w-[40%]">Borders Attached : </label>
+                <span id="bordersAttached" class="w-[60%]"></span>
+            </div>
+            <div class="flex flex-row py-2">
+                <label class=" text-white text-xl font-bold w-[40%]">Capital : </label>
+                <span id="capital" class="w-[60%]"></span>
+            </div>
+            <div class="flex flex-row py-2">
+                <label class=" text-white text-xl font-bold w-[40%]">Continent : </label>
+                <span id="continent" class="w-[60%]"></span>
+            </div>
+            <div class="flex flex-row py-2">
+                <label class=" text-white text-xl font-bold w-[40%]">Currency : </label>
+                <span id="currencyName" class="w-[60%]"></span>
+            </div>
+            <div class="flex flex-row py-2">
+                <label class=" text-white text-xl font-bold w-[40%]">Currency Symbol : </label>
+                <span id="currencySymbol" class="w-[60%]"></span> 
+            </div>
+            <div class="flex flex-row py-2">
+                <label class=" text-white text-xl font-bold w-[40%]">Demonyms : </label>
+                <span id="demonyms"  class="w-[60%]"></span>
+            </div>
+            <div class="flex flex-row py-2">
+                <label class=" text-white text-xl font-bold w-[40%] relative">Flag : </label>
+                <img src="" id="forImage" class="h-[30px] max-w-[60%] absolute right-[27%]">
+            </div>
+            <div class="flex flex-row py-2">
+                <label class=" text-white text-xl font-bold w-[40%]">Languages : </label>
+                <span id="language" class="w-[60%]"></span>
+            </div>
+            <div class="flex flex-row py-2">
+                <label class=" text-white text-xl font-bold w-[40%]">Population : </label>
+                <span id="forPopulation" class="w-[60%]"></span> 
+            </div>
+            <div class="flex flex-row py-2">
+                <label class=" text-white text-xl font-bold w-[40%]">Region : </label>
+                <span id="region" class="w-[60%]"></span>
+            </div>
+            <div class="flex flex-row py-2 mb-4">
+                <label class=" text-white text-xl font-bold w-[40%]">Sub region : </label>
+                <span id="subregion" class="w-[60%]"></span>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+function st(){
+    event.preventDefault();
+    let nameOfCountry = document.getElementById("countryi").value.trim();
+    if (nameOfCountry==''){
+        alert("Please Enter Country Name ");
+        return;
+    }
+    async function getCountryInfo(countryName) {
+        try {
+            const response = await fetch(`https://restcountries.com/v3.1/name/${countryName}`);
+            const data = await response.json();
+            if (data.status === 404) {
+                alert('Country not found!');
+            } else {
+                const countryListAlpha3 = {
+                    "AFG": "Afghanistan",
+                    "ALB": "Albania",
+                    "DZA": "Algeria",
+                    "ASM": "American Samoa",
+                    "AND": "Andorra",
+                    "AGO": "Angola",
+                    "AIA": "Anguilla",
+                    "ATA": "Antarctica",
+                    "ATG": "Antigua and Barbuda",
+                    "ARG": "Argentina",
+                    "ARM": "Armenia",
+                    "ABW": "Aruba",
+                    "AUS": "Australia",
+                    "AUT": "Austria",
+                    "AZE": "Azerbaijan",
+                    "BHS": "Bahamas (the)",
+                    "BHR": "Bahrain",
+                    "BGD": "Bangladesh",
+                    "BRB": "Barbados",
+                    "BLR": "Belarus",
+                    "BEL": "Belgium",
+                    "BLZ": "Belize",
+                    "BEN": "Benin",
+                    "BMU": "Bermuda",
+                    "BTN": "Bhutan",
+                    "BOL": "Bolivia (Plurinational State of)",
+                    "BES": "Bonaire, Sint Eustatius and Saba",
+                    "BIH": "Bosnia and Herzegovina",
+                    "BWA": "Botswana",
+                    "BVT": "Bouvet Island",
+                    "BRA": "Brazil",
+                    "IOT": "British Indian Ocean Territory (the)",
+                    "BRN": "Brunei Darussalam",
+                    "BGR": "Bulgaria",
+                    "BFA": "Burkina Faso",
+                    "BDI": "Burundi",
+                    "CPV": "Cabo Verde",
+                    "KHM": "Cambodia",
+                    "CMR": "Cameroon",
+                    "CAN": "Canada",
+                    "CYM": "Cayman Islands (the)",
+                    "CAF": "Central African Republic (the)",
+                    "TCD": "Chad",
+                    "CHL": "Chile",
+                    "CHN": "China",
+                    "CXR": "Christmas Island",
+                    "CCK": "Cocos (Keeling) Islands (the)",
+                    "COL": "Colombia",
+                    "COM": "Comoros (the)",
+                    "COD": "Congo (the Democratic Republic of the)",
+                    "COG": "Congo (the)",
+                    "COK": "Cook Islands (the)",
+                    "CRI": "Costa Rica",
+                    "HRV": "Croatia",
+                    "CUB": "Cuba",
+                    "CUW": "Curaçao",
+                    "CYP": "Cyprus",
+                    "CZE": "Czechia",
+                    "CIV": "Côte d'Ivoire",
+                    "DNK": "Denmark",
+                    "DJI": "Djibouti",
+                    "DMA": "Dominica",
+                    "DOM": "Dominican Republic (the)",
+                    "ECU": "Ecuador",
+                    "EGY": "Egypt",
+                    "SLV": "El Salvador",
+                    "GNQ": "Equatorial Guinea",
+                    "ERI": "Eritrea",
+                    "EST": "Estonia",
+                    "SWZ": "Eswatini",
+                    "ETH": "Ethiopia",
+                    "FLK": "Falkland Islands (the) [Malvinas]",
+                    "FRO": "Faroe Islands (the)",
+                    "FJI": "Fiji",
+                    "FIN": "Finland",
+                    "FRA": "France",
+                    "GUF": "French Guiana",
+                    "PYF": "French Polynesia",
+                    "ATF": "French Southern Territories (the)",
+                    "GAB": "Gabon",
+                    "GMB": "Gambia (the)",
+                    "GEO": "Georgia",
+                    "DEU": "Germany",
+                    "GHA": "Ghana",
+                    "GIB": "Gibraltar",
+                    "GRC": "Greece",
+                    "GRL": "Greenland",
+                    "GRD": "Grenada",
+                    "GLP": "Guadeloupe",
+                    "GUM": "Guam",
+                    "GTM": "Guatemala",
+                    "GGY": "Guernsey",
+                    "GIN": "Guinea",
+                    "GNB": "Guinea-Bissau",
+                    "GUY": "Guyana",
+                    "HTI": "Haiti",
+                    "HMD": "Heard Island and McDonald Islands",
+                    "VAT": "Holy See (the)",
+                    "HND": "Honduras",
+                    "HKG": "Hong Kong",
+                    "HUN": "Hungary",
+                    "ISL": "Iceland",
+                    "IND": "India",
+                    "IDN": "Indonesia",
+                    "IRN": "Iran (Islamic Republic of)",
+                    "IRQ": "Iraq",
+                    "IRL": "Ireland",
+                    "IMN": "Isle of Man",
+                    "ISR": "Israel",
+                    "ITA": "Italy",
+                    "JAM": "Jamaica",
+                    "JPN": "Japan",
+                    "JEY": "Jersey",
+                    "JOR": "Jordan",
+                    "KAZ": "Kazakhstan",
+                    "KEN": "Kenya",
+                    "KIR": "Kiribati",
+                    "PRK": "Korea (the Democratic People's Republic of)",
+                    "KOR": "Korea (the Republic of)",
+                    "KWT": "Kuwait",
+                    "KGZ": "Kyrgyzstan",
+                    "LAO": "Lao People's Democratic Republic (the)",
+                    "LVA": "Latvia",
+                    "LBN": "Lebanon",
+                    "LSO": "Lesotho",
+                    "LBR": "Liberia",
+                    "LBY": "Libya",
+                    "LIE": "Liechtenstein",
+                    "LTU": "Lithuania",
+                    "LUX": "Luxembourg",
+                    "MAC": "Macao",
+                    "MDG": "Madagascar",
+                    "MWI": "Malawi",
+                    "MYS": "Malaysia",
+                    "MDV": "Maldives",
+                    "MLI": "Mali",
+                    "MLT": "Malta",
+                    "MHL": "Marshall Islands (the)",
+                    "MTQ": "Martinique",
+                    "MRT": "Mauritania",
+                    "MUS": "Mauritius",
+                    "MYT": "Mayotte",
+                    "MEX": "Mexico",
+                    "FSM": "Micronesia (Federated States of)",
+                    "MDA": "Moldova (the Republic of)",
+                    "MCO": "Monaco",
+                    "MNG": "Mongolia",
+                    "MNE": "Montenegro",
+                    "MSR": "Montserrat",
+                    "MAR": "Morocco",
+                    "MOZ": "Mozambique",
+                    "MMR": "Myanmar",
+                    "NAM": "Namibia",
+                    "NRU": "Nauru",
+                    "NPL": "Nepal",
+                    "NLD": "Netherlands (the)",
+                    "NCL": "New Caledonia",
+                    "NZL": "New Zealand",
+                    "NIC": "Nicaragua",
+                    "NER": "Niger (the)",
+                    "NGA": "Nigeria",
+                    "NIU": "Niue",
+                    "NFK": "Norfolk Island",
+                    "MNP": "Northern Mariana Islands (the)",
+                    "NOR": "Norway",
+                    "OMN": "Oman",
+                    "PAK": "Pakistan",
+                    "PLW": "Palau",
+                    "PSE": "Palestine, State of",
+                    "PAN": "Panama",
+                    "PNG": "Papua New Guinea",
+                    "PRY": "Paraguay",
+                    "PER": "Peru",
+                    "PHL": "Philippines (the)",
+                    "PCN": "Pitcairn",
+                    "POL": "Poland",
+                    "PRT": "Portugal",
+                    "PRI": "Puerto Rico",
+                    "QAT": "Qatar",
+                    "MKD": "Republic of North Macedonia",
+                    "ROU": "Romania",
+                    "RUS": "Russian Federation (the)",
+                    "RWA": "Rwanda",
+                    "REU": "Réunion",
+                    "BLM": "Saint Barthélemy",
+                    "SHN": "Saint Helena, Ascension and Tristan da Cunha",
+                    "KNA": "Saint Kitts and Nevis",
+                    "LCA": "Saint Lucia",
+                    "MAF": "Saint Martin (French part)",
+                    "SPM": "Saint Pierre and Miquelon",
+                    "VCT": "Saint Vincent and the Grenadines",
+                    "WSM": "Samoa",
+                    "SMR": "San Marino",
+                    "STP": "Sao Tome and Principe",
+                    "SAU": "Saudi Arabia",
+                    "SEN": "Senegal",
+                    "SRB": "Serbia",
+                    "SYC": "Seychelles",
+                    "SLE": "Sierra Leone",
+                    "SGP": "Singapore",
+                    "SXM": "Sint Maarten (Dutch part)",
+                    "SVK": "Slovakia",
+                    "SVN": "Slovenia",
+                    "SLB": "Solomon Islands",
+                    "SOM": "Somalia",
+                    "ZAF": "South Africa",
+                    "SGS": "South Georgia and the South Sandwich Islands",
+                    "SSD": "South Sudan",
+                    "ESP": "Spain",
+                    "LKA": "Sri Lanka",
+                    "SDN": "Sudan (the)",
+                    "SUR": "Suriname",
+                    "SJM": "Svalbard and Jan Mayen",
+                    "SWE": "Sweden",
+                    "CHE": "Switzerland",
+                    "SYR": "Syrian Arab Republic",
+                    "TWN": "Taiwan",
+                    "TJK": "Tajikistan",
+                    "TZA": "Tanzania, United Republic of",
+                    "THA": "Thailand",
+                    "TLS": "Timor-Leste",
+                    "TGO": "Togo",
+                    "TKL": "Tokelau",
+                    "TON": "Tonga",
+                    "TTO": "Trinidad and Tobago",
+                    "TUN": "Tunisia",
+                    "TUR": "Turkey",
+                    "TKM": "Turkmenistan",
+                    "TCA": "Turks and Caicos Islands (the)",
+                    "TUV": "Tuvalu",
+                    "UGA": "Uganda",
+                    "UKR": "Ukraine",
+                    "ARE": "United Arab Emirates (the)",
+                    "GBR": "United Kingdom of Great Britain and Northern Ireland (the)",
+                    "UMI": "United States Minor Outlying Islands (the)",
+                    "USA": "United States of America (the)",
+                    "URY": "Uruguay",
+                    "UZB": "Uzbekistan",
+                    "VUT": "Vanuatu",
+                    "VEN": "Venezuela (Bolivarian Republic of)",
+                    "VNM": "Viet Nam",
+                    "VGB": "Virgin Islands (British)",
+                    "VIR": "Virgin Islands (U.S.)",
+                    "WLF": "Wallis and Futuna",
+                    "ESH": "Western Sahara",
+                    "YEM": "Yemen",
+                    "ZMB": "Zambia",
+                    "ZWE": "Zimbabwe",
+                    "ALA": "Åland Islands"
+                };
+                document.getElementById("forAnswer").classList.remove("hidden");
+                lengthOfData = data.length;
+                document.getElementById("officialName").innerHTML=data[lengthOfData-1].name.official;
+                document.getElementById("forArea").innerHTML=`${data[0].area} km square`;
+                if (data[lengthOfData - 1].hasOwnProperty('borders')) {
+                    let lis=data[lengthOfData-1].borders;
+                    let l=[];
+                    lis.map((v)=>{
+                        return(
+                            l.push(countryListAlpha3[v])
+                        )
+                    });
+                    document.getElementById("bordersAttached").innerHTML=l;
+                }
+                document.getElementById("capital").innerHTML=data[0].capital;
+                document.getElementById("continent").innerHTML=data[0].continents;
+                document.getElementById("demonyms").innerHTML=data[0].demonyms.eng.f;
+                document.getElementById("forImage").src=data[0].flags.png;
+                let obj = data[0].languages;
+                Object.entries(obj).forEach(([code, name]) => {
+                    document.getElementById("language").innerHTML += ` ${name} | `;
+                });
+                let money = data[0].currencies;
+                Object.entries(money).forEach(([code, currency]) => {
+                    document.getElementById("currencyName").innerHTML = currency.name;
+                    document.getElementById("currencySymbol").innerHTML = currency.symbol;
+                });
+                document.getElementById("forPopulation").innerHTML=`${data[0].population} people`;
+                document.getElementById("region").innerHTML=data[0].region;
+                document.getElementById("subregion").innerHTML=data[0].subregion;
+            }
+        } catch (error) {
+            alert('Error fetching data:', error);
+        }
+    }
+    getCountryInfo(nameOfCountry);
+}
+</script>
+</html>

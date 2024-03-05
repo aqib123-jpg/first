@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gender Identification Project </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+        theme : {
+            screens: {
+                'xxs':'50px',
+                'xs':'350px',
+                'dxs':'450px',
+                'sm':'640px',
+                'md':'768px',
+                'lg':'1024px',
+                'xl':'1280px',
+                '2xl':'1536px',
+            },
+            extend : {
+                screens: {
+                    'dxs':{'min':'450px'},
+                    'xs':{'min':'350px'},
+                    'xxs':{'min':'50px'},
+                },
+                colors:{
+                    'AqibColor' : '#5b21b6',
+                    'facColor': '#f97316',
+                }
+            }
+        }
+    }
+  </script>
+</head>
+<body class="h-[100vh] bg-cover bg-center bg-no-repeat bg-fixed xs:bg-right xxs:bg-right md:bg-right overflow-hidden flex justify-center" style="background-image: url('highP.jpg')">
+    <div class="container flex justify-center h-screen ">
+        <form class="w-full max-w-lg mt-8 ">
+            <fieldset>
+                <label class="font-mono md:text-4xl text-2xl font-bold italic mx-auto text-[#84cc16]">PLEASE ENTER ANY WORD : </label>
+                <input type="text" id="cityName" class="border-2 border-[#09090b] block w-full mt-2 px-3 py-2 rounded-md text-lg mx-auto" required="" autofocus><br>
+                <button id="btn" class="bg-[#14b8a6] relative hover:bg-[#fafafa] text-white hover:text-[#14b8a6] font-bold py-2 px-4 rounded-full mt-2 block mx-auto " onclick="getStart(event)" >SEARCH</button>
+            </fieldset>
+        </form>
+        <div class="absolute flex bg-[#4f46e5] top-56 w-full gap-4 md:text-4xl text-2xl font-bold  justify-center text-[#facc15] underline font-serif" id="main">
+            
+        </div>
+        <ol class="absolute top-72 w-full gap-4 md:text-xl text-sm text-left text-[#fca5a5] px-[10%] text-justify overflow-auto  underline" id="forAnswer" style="max-height: calc(100vh - 250px);">
+        </ol>
+    </div>
+</body>
+<script type="text/javascript">
+    function getStart(event){
+        let count=1;
+        event.preventDefault();
+        let word = document.getElementById("cityName").value.trim().toUpperCase();
+        if(word==''){
+            alert("****Please Write Word*****");
+        }
+        else{
+            const fetchDefinition = async (word) => {
+                const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
+                try {
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) {
+                        alert('Network response was not ok');
+                    }
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    alert('There was a problem with the fetch operation:', error);
+                    return null;
+                }
+            };
+
+            const getDefinition = async (word) => {
+                try {
+                    document.getElementById("main").innerHTML=`TRANSLATION OF ${word}`;
+                    document.getElementById("cityName").value="";
+
+                    // Clear previous definitions
+                    document.getElementById("forAnswer").innerHTML = "";
+
+                    const data = await fetchDefinition(word);
+                    if(data[0].meanings.length > 1){
+                        let nounData = data[0].meanings[0].definitions;
+                        nounData.forEach((v, index) => {
+                            const liElement = document.createElement("li");
+                            liElement.textContent = `Definition ${count}: ${v.definition}`;
+                            liElement.style.paddingTop = "10px";
+                            document.getElementById("forAnswer").appendChild(liElement);
+                            count++;
+                        });
+                        let verbData = data[0].meanings[1].definitions;
+                        verbData.forEach((v, index) => {
+                            const liElement = document.createElement("li");
+                            liElement.textContent = `Definition ${count}: ${v.definition}`;
+                            liElement.style.paddingTop = "10px";
+                            document.getElementById("forAnswer").appendChild(liElement);
+                            count++;
+                        });
+                    } 
+                    else{
+                        let nounData = data[0].meanings[0].definitions;
+                        nounData.forEach((v, index) => {
+                            const liElement = document.createElement("li");
+                            liElement.textContent = `Definition ${index + 1}: ${v.definition}`;
+                            liElement.style.paddingTop = "10px";
+                            document.getElementById("forAnswer").appendChild(liElement);
+                        });
+                    }
+                } catch (error) {
+                    alert(`Failed to Find the Meaning of ${word}`);
+                }
+            };
+
+            getDefinition(word);
+        }
+    }
+
+</script>
+</html>

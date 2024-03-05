@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currecy Converter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                screens: {
+                'xxs': '50px',
+                'xs': '350px',
+                'dxs':'450px',
+                'sm': '640px',
+                'md': '768px',
+                'lg': '1024px',
+                'xl': '1280px',
+                '2xl': '1536px',
+                },
+                extend: {
+                    screens: {
+                        'dxs': {'min':'450px'},
+                        'xs' : {'min':'350px'},
+                        'xxs' : {'min':'50px'},
+                    },
+                },
+            },
+        }
+    </script>
+    <link rel="stylesheet" href="fontawesome-free-6.5.1-web/css/all.css">
+</head>
+<body class="h-[100vh] flex justify-center items-center overflow-hidden bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% ">
+        <div class="block bg-yellow-300 rounded-md border-2 border-[#020617] border-dashed">
+            <h1 class="text-center text-2xl font-serif underline text-[#991b1b] py-2 ">Currency Converter</h1>
+            <div class="flex flex-col items-center">
+                <label class="text-lg">Please Enter Amount : </label>
+                <input type="number" class="border-2 border-[#020617]" id="valu">
+            </div>
+            <label class="block bg-[#f97316] my-2 text-xl text-[#d4d4d8] text-center font-mono font-bold w-[100%]">FROM</label>
+            <div class="flex flex-row relative">
+                <select id="opt" class="h-[45px] focus:outline-none border-2  border-[#16a34a] font-bold text-center text-xl w-4/5">
+                </select>
+                <img id="from" class="absolute w-1/5 top-1/2 transform -translate-y-1/2 right-0" src="https://flagsapi.com/AL/flat/64.png">
+            </div>
+            <label class="block bg-[#f97316] my-2 text-xl text-center text-[#d4d4d8] font-mono font-bold w-[100%]">TO</label>
+            <div class="flex flex-row relative">
+                <select id="opti" class="h-[45px] focus:outline-none border-2  border-[#16a34a] font-bold text-center text-xl w-4/5">
+                </select>
+                <img id="to" class="absolute w-1/5 top-1/2 transform -translate-y-1/2 right-0" src="https://flagsapi.com/AL/flat/64.png">
+            </div>
+            <div class="text-center">
+                <button onclick="ye()" class="bg-blue-800 hover:bg-white hover:text-blue-800 text-white font-bold py-2 px-4 rounded-full my-2">CONVERT  ( <i class="fa-solid fa-arrow-right-arrow-left"></i>  )</button>
+            </div>
+            <div>
+                <label class="block bg-[#f472b6]  text-xl text-center font-mono font-bold w-[100%] mb-2">RESULT</label>
+                <div class="block bg-stone-400 text-xl text-center font-sans my-2 mb-4 hidden"  id="finalAns"></div>
+            </div>
+        </div>
+</body>
+<script type="text/javascript">
+    const codes = {
+        'Albania Lek': { currencyCode: 'ALL', countryCode: 'AL' },
+        'Afghanistan Afghani': { currencyCode: 'AFN', countryCode: 'AF' },
+        'Argentina Peso': { currencyCode: 'ARS', countryCode: 'AR' },
+        'Aruba Guilder': { currencyCode: 'AWG', countryCode: 'AW' },
+        'Australia Dollar': { currencyCode: 'AUD', countryCode: 'AU' },
+        'Azerbaijan New Manat': { currencyCode: 'AZN', countryCode: 'AZ' },
+        'Bahamas Dollar': { currencyCode: 'BSD', countryCode: 'BS' },
+        'Barbados Dollar': { currencyCode: 'BBD', countryCode: 'BB' },
+        'Bangladeshi taka': { currencyCode: 'BDT', countryCode: 'BD' },
+        'Belarus Ruble': { currencyCode: 'BYR', countryCode: 'BY' },
+        'Belize Dollar': { currencyCode: 'BZD', countryCode: 'BZ' },
+        'Bermuda Dollar': { currencyCode: 'BMD', countryCode: 'BM' },
+        'Bolivia Boliviano': { currencyCode: 'BOB', countryCode: 'BO' },
+        'Bosnia and Herzegovina Convertible Marka': { currencyCode: 'BAM', countryCode: 'BA' },
+        'Botswana Pula': { currencyCode: 'BWP', countryCode: 'BW' },
+        'Bulgaria Lev': { currencyCode: 'BGN', countryCode: 'BG' },
+        'Brazil Real': { currencyCode: 'BRL', countryCode: 'BR' },
+        'Brunei Darussalam Dollar': { currencyCode: 'BND', countryCode: 'BN' },
+        'Cambodia Riel': { currencyCode: 'KHR', countryCode: 'KH' },
+        'Canada Dollar': { currencyCode: 'CAD', countryCode: 'CA' },
+        'Cayman Islands Dollar': { currencyCode: 'KYD', countryCode: 'KY' },
+        'Chile Peso': { currencyCode: 'CLP', countryCode: 'CL' },
+        'China Yuan Renminbi': { currencyCode: 'CNY', countryCode: 'CN' },
+        'Colombia Peso': { currencyCode: 'COP', countryCode: 'CO' },
+        'Costa Rica Colon': { currencyCode: 'CRC', countryCode: 'CR' },
+        'Croatia Kuna': { currencyCode: 'HRK', countryCode: 'HR' },
+        'Cuba Peso': { currencyCode: 'CUP', countryCode: 'CU' },
+        'Czech Republic Koruna': { currencyCode: 'CZK', countryCode: 'CZ' },
+        'Denmark Krone': { currencyCode: 'DKK', countryCode: 'DK' },
+        'Dominican Republic Peso': { currencyCode: 'DOP', countryCode: 'DO' },
+        'East Caribbean Dollar': { currencyCode: 'XCD', countryCode: 'DM' },
+        'Egypt Pound': { currencyCode: 'EGP', countryCode: 'EG' },
+        'El Salvador Colon': { currencyCode: 'SVC', countryCode: 'SV' },
+        'Estonia Kroon': { currencyCode: 'EEK', countryCode: 'EE' },
+        'Euro Member Countries': { currencyCode: 'EUR', countryCode: 'EU' },
+        'Falkland Islands (Malvinas) Pound': { currencyCode: 'FKP', countryCode: 'FK' },
+        'Fiji Dollar': { currencyCode: 'FJD', countryCode: 'FJ' },
+        'Ghana Cedis': { currencyCode: 'GHC', countryCode: 'GH' },
+        'Gibraltar Pound': { currencyCode: 'GIP', countryCode: 'GI' },
+        'Guatemala Quetzal': { currencyCode: 'GTQ', countryCode: 'GT' },
+        'Guernsey Pound': { currencyCode: 'GGP', countryCode: 'GG' },
+        'Guyana Dollar': { currencyCode: 'GYD', countryCode: 'GY' },
+        'Honduras Lempira': { currencyCode: 'HNL', countryCode: 'HN' },
+        'Hong Kong Dollar': { currencyCode: 'HKD', countryCode: 'HK' },
+        'Hungary Forint': { currencyCode: 'HUF', countryCode: 'HU' },
+        'Iceland Krona': { currencyCode: 'ISK', countryCode: 'IS' },
+        'India Rupee': { currencyCode: 'INR', countryCode: 'IN' },
+        'Indonesia Rupiah': { currencyCode: 'IDR', countryCode: 'ID' },
+        'Iran Rial': { currencyCode: 'IRR', countryCode: 'IR' },
+        'Isle of Man Pound': { currencyCode: 'IMP', countryCode: 'IM' },
+        'Israel Shekel': { currencyCode: 'ILS', countryCode: 'IL' },
+        'Jamaica Dollar': { currencyCode: 'JMD', countryCode: 'JM' },
+        'Japan Yen': { currencyCode: 'JPY', countryCode: 'JP' },
+        'Jersey Pound': { currencyCode: 'JEP', countryCode: 'JE' },
+        'Kazakhstan Tenge': { currencyCode: 'KZT', countryCode: 'KZ' },
+        'Korea (North) Won': { currencyCode: 'KPW', countryCode: 'KP' },
+        'Korea (South) Won': { currencyCode: 'KRW', countryCode: 'KR' },
+        'Kyrgyzstan Som': { currencyCode: 'KGS', countryCode: 'KG' },
+        'Laos Kip': { currencyCode: 'LAK', countryCode: 'LA' },
+        'Latvia Lat': { currencyCode: 'LVL', countryCode: 'LV' },
+        'Lebanon Pound': { currencyCode: 'LBP', countryCode: 'LB' },
+        'Liberia Dollar': { currencyCode: 'LRD', countryCode: 'LR' },
+        'Lithuania Litas': { currencyCode: 'LTL', countryCode: 'LT' },
+        'Macedonia Denar': { currencyCode: 'MKD', countryCode: 'MK' },
+        'Malaysia Ringgit': { currencyCode: 'MYR', countryCode: 'MY' },
+        'Mauritius Rupee': { currencyCode: 'MUR', countryCode: 'MU' },
+        'Mexico Peso': { currencyCode: 'MXN', countryCode: 'MX' },
+        'Mongolia Tughrik': { currencyCode: 'MNT', countryCode: 'MN' },
+        'Mozambique Metical': { currencyCode: 'MZN', countryCode: 'MZ' },
+        'Namibia Dollar': { currencyCode: 'NAD', countryCode: 'NA' },
+        'Nepal Rupee': { currencyCode: 'NPR', countryCode: 'NP' },
+        'Netherlands Antilles Guilder': { currencyCode: 'ANG', countryCode: 'AN' },
+        'New Zealand Dollar': { currencyCode: 'NZD', countryCode: 'NZ' },
+        'Nicaragua Cordoba': { currencyCode: 'NIO', countryCode: 'NI' },
+        'Nigeria Naira': { currencyCode: 'NGN', countryCode: 'NG' },
+        'Norway Krone': { currencyCode: 'NOK', countryCode: 'NO' },
+        'Oman Rial': { currencyCode: 'OMR', countryCode: 'OM' },
+        'Pakistan Rupee': { currencyCode: 'PKR', countryCode: 'PK' },
+        'Panama Balboa': { currencyCode: 'PAB', countryCode: 'PA' },
+        'Paraguay Guarani': { currencyCode: 'PYG', countryCode: 'PY' },
+        'Peru Nuevo Sol': { currencyCode: 'PEN', countryCode: 'PE' },
+        'Philippines Peso': { currencyCode: 'PHP', countryCode: 'PH' },
+        'Poland Zloty': { currencyCode: 'PLN', countryCode: 'PL' },
+        'Qatar Riyal': { currencyCode: 'QAR', countryCode: 'QA' },
+        'Romania New Leu': { currencyCode: 'RON', countryCode: 'RO' },
+        'Russia Ruble': { currencyCode: 'RUB', countryCode: 'RU' },
+        'Saint Helena Pound': { currencyCode: 'SHP', countryCode: 'SH' },
+        'Saudi Arabia Riyal': { currencyCode: 'SAR', countryCode: 'SA' },
+        'Serbia Dinar': { currencyCode: 'RSD', countryCode: 'RS' },
+        'Seychelles Rupee': { currencyCode: 'SCR', countryCode: 'SC' },
+        'Singapore Dollar': { currencyCode: 'SGD', countryCode: 'SG' },
+        'Solomon Islands Dollar': { currencyCode: 'SBD', countryCode: 'SB' },
+        'Somalia Shilling': { currencyCode: 'SOS', countryCode: 'SO' },
+        'South Africa Rand': { currencyCode: 'ZAR', countryCode: 'ZA' },
+        'Sri Lanka Rupee': { currencyCode: 'LKR', countryCode: 'LK' },
+        'Sweden Krona': { currencyCode: 'SEK', countryCode: 'SE' },
+        'Switzerland Franc': { currencyCode: 'CHF', countryCode: 'CH' },
+        'Suriname Dollar': { currencyCode: 'SRD', countryCode: 'SR' },
+        'Syria Pound': { currencyCode: 'SYP', countryCode: 'SY' },
+        'Taiwan New Dollar': { currencyCode: 'TWD', countryCode: 'TW' },
+        'Thailand Baht': { currencyCode: 'THB', countryCode: 'TH' },
+        'Trinidad and Tobago Dollar': { currencyCode: 'TTD', countryCode: 'TT' },
+        'Turkey Lira': { currencyCode: 'TRY', countryCode: 'TR' },
+        'Tuvalu Dollar': { currencyCode: 'TVD', countryCode: 'TV' },
+        'Ukraine Hryvna': { currencyCode: 'UAH', countryCode: 'UA' },
+        'United Kingdom Pound': { currencyCode: 'GBP', countryCode: 'GB' },
+        'United States Dollar': { currencyCode: 'USD', countryCode: 'US' },
+        'Uruguay Peso': { currencyCode: 'UYU', countryCode: 'UY' },
+        'Uzbekistan Som': { currencyCode: 'UZS', countryCode: 'UZ' },
+        'Venezuela Bolivar': { currencyCode: 'VEF', countryCode: 'VE' },
+        'Viet Nam Dong': { currencyCode: 'VND', countryCode: 'VN' },
+        'Yemen Rial': { currencyCode: 'YER', countryCode: 'YE' },
+        'Zimbabwe Dollar': { currencyCode: 'ZWD', countryCode: 'ZW' }
+    };
+    let fromCode='ALL';
+    let toCode='ALL';
+    for (const curr in codes){
+        const ye = document.createElement("option");
+        ye.textContent=curr;
+        document.getElementById("opt").appendChild(ye);
+    }
+    document.getElementById("opt").addEventListener("change", function() {
+        var selectedOption = this.options[this.selectedIndex].text;
+        var selectedCountryCode = codes[selectedOption].countryCode;
+        fromCode=codes[selectedOption].currencyCode;
+        var imageSrc = "https://flagsapi.com/" + selectedCountryCode + "/flat/64.png";
+        document.querySelector("#from").src = imageSrc;
+    });
+    for (const curri in codes){
+        const yei = document.createElement("option");
+        yei.textContent=curri;
+        document.getElementById("opti").appendChild(yei);
+    }
+    document.getElementById("opti").addEventListener("change", function() {
+        var selectedOptioni = this.options[this.selectedIndex].text;
+        var selectedCountryCodei = codes[selectedOptioni].countryCode;
+        toCode=codes[selectedOptioni].currencyCode;
+        var imageSrci = "https://flagsapi.com/" + selectedCountryCodei + "/flat/64.png";
+        document.querySelector("#to").src = imageSrci;
+    });
+    function ye(){
+        async function fetchExchangeRates() {
+            let amount=document.getElementById("valu").value.trim();
+            document.getElementById("finalAns").classList.remove('hidden');
+            if(amount>=0){
+                const apiUrl = `https://v6.exchangerate-api.com/v6/67c359b725765b028ea20110/latest/${fromCode}`; // Enclosed URL in backticks
+                const response = await fetch(apiUrl); // Awaited fetch promise
+                const data = await response.json();
+                let result = parseFloat(data.conversion_rates[toCode]*amount);
+                if (isNaN(result)){
+                    document.getElementById("finalAns").innerHTML= "Sorry Conversion Not Available";    
+                }
+                else{
+                    document.getElementById("finalAns").innerHTML=`${amount} ${fromCode} in ${toCode} = ${result}`;
+                }
+            }
+            else if (!amount){
+                document.getElementById("finalAns").innerHTML="Please Enter Any Amount";
+            }
+            else{
+                document.getElementById("finalAns").innerHTML="Please Enter Positive Number";
+            }
+        }
+        fetchExchangeRates();
+    }
+</script>
+</html>

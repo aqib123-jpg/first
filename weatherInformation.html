@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>learning weather information</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                screens: {
+                'xxs': '50px',
+                'xs': '350px',
+                'dxs':'450px',
+                'sm': '640px',
+                'md': '768px',
+                'lg': '1024px',
+                'xl': '1280px',
+                '2xl': '1536px',
+                },
+                extend: {
+                    screens: {
+                        'dxs': {'min':'450px'},
+                        'xs' : {'min':'350px'},
+                        'xxs' : {'min':'50px'},
+                    },
+                },
+            },
+        }
+    </script>
+    <link rel="stylesheet" href="fontawesome-free-6.5.1-web/css/all.css">
+</head>
+<body class="bg-gradient-to-b from-[#94a3b8] via-[#fed7aa] to-[#a1a1aa] ]">
+    <div class="container flex justify-center h-screen ">
+        <form class="w-full max-w-lg mt-8 ">
+            <fieldset>
+                <label class="font-mono text-2xl font-bold italic font-serif mx-auto text-[#5b21b6]">PLEASE ENTER CITY NAME : </label>
+                <input type="text" id="cityName" class="border-2 border-blue-600 block w-full mt-2 px-3 py-2 rounded-md text-lg mx-auto" required="" autofocus><br>
+                <button id="btn" class="bg-[#09090b] relative hover:bg-[#fafafa] text-white hover:text-[#09090b] font-bold py-2 px-4 rounded-full mt-2 block mx-auto " >SUBMIT</button>
+            </fieldset>
+        </form>
+        <div class="absolute flex top-48 items-center gap-4 hidden" id="main">
+            <span class="ml-2 md:text-2xl font-mono text-[#4c1d95]" id="desc"></span>
+            <img src="" id="forImg" class="h-28 w-28  rounded-full  ">
+        </div>
+        <div class="grid grid-cols-3 absolute top-80 gap-4 text-center md:text-2xl font-mono text-[#365314] ">
+            <div class=" col-span-3 bg-[#84cc16] underline  rounded" id="currentT"></div>
+            <div class="bg-[#bef264] rounded-t-lg" id="first"></div>
+            <div class="bg-[#bef264] rounded-t-lg" id="second"></div>
+            <div class="bg-[#bef264] rounded-t-lg" id="three"></div>
+            <div class="bg-[#bef264] rounded-t-lg" id="four"></div>
+            <div class="bg-[#bef264] rounded-t-lg" id="five"></div>
+            <div class="bg-[#bef264] rounded-t-lg" id="six"></div>
+            <div class="bg-[#bef264] rounded-t-lg" id="seven"></div>
+            <div class="bg-[#bef264] rounded-t-lg" id="eight"></div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript">
+    document.getElementById("btn").addEventListener("click", function(event){
+        event.preventDefault();
+        let city=document.getElementById("cityName").value.trim();
+        document.getElementById("cityName").value = "";
+        if (!city){
+            alert('Please Enter City Name ');
+            return ;
+        }
+        const apiKey = 'ee369454cfe2428816542450d48c1928';
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+        const apiUrlCurrent = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+        async function getWeatherCurrent(city) {
+            try {
+                const response = await fetch(apiUrlCurrent);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                alert('Error fetching weather data:', error);
+                throw new Error('Error fetching weather data.');
+            }
+        }
+        async function displayWeatherCurrent(city) {
+            try {
+                const weatherData = await getWeatherCurrent(city);
+                document.querySelector('#main').classList.remove('hidden');
+                const iconCode=weatherData.weather[0].icon;
+                document.getElementById("forImg").src = `https://openweathermap.org/img/wn/${iconCode}.png`;
+                document.getElementById("desc").innerHTML=weatherData.weather[0].description;
+                document.getElementById("currentT").innerHTML="Current Temperature of "+city+" is "+weatherData.main.temp+"°C next 24hr Temp with difference of 3hr : ";
+            } catch (error) {
+                alert('Error displaying weather data:', error);
+            }
+        }
+        async function fetchWeatherData(city) {
+            const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                alert('Error fetching weather data:', error);
+                throw error;
+            }
+        }
+        async function getWeatherForNext24Hours(city) {
+            try {
+                const data = await fetchWeatherData(city);
+                const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds since UNIX epoch
+                const next24HoursWeather = data.list.filter(entry => entry.dt <= currentTime + 86400); // Filter entries for the next 24 hours
+                return next24HoursWeather;
+            } catch (error) {
+                alert('Error getting weather for next 24 hours:', error);
+                throw error;
+            }
+        }
+        async function displayWeatherForNext24Hours(city) {
+            try {
+                const next24HoursWeather = await getWeatherForNext24Hours(city);
+                let currentTime1=next24HoursWeather[0].dt;
+                let currentTime2=next24HoursWeather[1].dt;
+                let currentTime3=next24HoursWeather[2].dt;
+                let currentTime4=next24HoursWeather[3].dt;
+                let currentTime5=next24HoursWeather[4].dt;
+                let currentTime6=next24HoursWeather[5].dt;
+                let currentTime7=next24HoursWeather[6].dt;
+                let currentTime8=next24HoursWeather[7].dt;
+                document.getElementById("first").innerHTML=`Time: ${new Date(currentTime1 * 1000).getHours()}:${new Date(currentTime1 * 1000).getMinutes()}0:${new Date(currentTime1 * 1000).getSeconds()}0 ${next24HoursWeather[0].main.temp} °C`;
+                document.getElementById("second").innerHTML=`Time: ${new Date(currentTime2 * 1000).getHours()}:${new Date(currentTime2 * 1000).getMinutes()}0:${new Date(currentTime2 * 1000).getSeconds()}0 ${next24HoursWeather[1].main.temp} °C`;
+                document.getElementById("three").innerHTML=`Time: ${new Date(currentTime3 * 1000).getHours()}:${new Date(currentTime3 * 1000).getMinutes()}0:${new Date(currentTime3 * 1000).getSeconds()}0 ${next24HoursWeather[2].main.temp} °C`;
+                document.getElementById("four").innerHTML=`Time: ${new Date(currentTime4 * 1000).getHours()}:${new Date(currentTime4 * 1000).getMinutes()}0:${new Date(currentTime4 * 1000).getSeconds()}0 ${next24HoursWeather[3].main.temp} °C`;
+                document.getElementById("five").innerHTML=`Time: ${new Date(currentTime5 * 1000).getHours()}:${new Date(currentTime5 * 1000).getMinutes()}0:${new Date(currentTime5 * 1000).getSeconds()}0 ${next24HoursWeather[4].main.temp} °C`;
+                document.getElementById("six").innerHTML=`Time: ${new Date(currentTime6 * 1000).getHours()}:${new Date(currentTime6 * 1000).getMinutes()}0:${new Date(currentTime6 * 1000).getSeconds()}0 ${next24HoursWeather[5].main.temp} °C`;
+                document.getElementById("seven").innerHTML=`Time: ${new Date(currentTime7 * 1000).getHours()}:${new Date(currentTime7 * 1000).getMinutes()}0:${new Date(currentTime7 * 1000).getSeconds()}0 ${next24HoursWeather[6].main.temp} °C`;
+                document.getElementById("eight").innerHTML=`Time: ${new Date(currentTime8 * 1000).getHours()}:${new Date(currentTime8 * 1000).getMinutes()}0:${new Date(currentTime8 * 1000).getSeconds()}0 ${next24HoursWeather[7].main.temp} °C`;
+            } catch (error) {
+                console.error('Error displaying weather for next 24 hours:', error);
+            }
+        }
+        displayWeatherCurrent(city);
+        displayWeatherForNext24Hours(city);
+    });
+</script>
+</html>
